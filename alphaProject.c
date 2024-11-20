@@ -66,8 +66,8 @@ int main() {
 // Parse a single number from a string
 double parseNumber(const char *str, int *index) {
     double result = 0;
-    sscanf(&str[*index], "%lf", &result);
     while (isdigit(str[*index]) || str[*index] == '.' || str[*index] == '-') {
+		sscanf(&str[*index], "%lf", &result);
         (*index)++;
     }
     return result;
@@ -80,32 +80,37 @@ void parseInput(const char *input, char *operation, double *numbers, int *numCou
 
     // Read operation
     while (isspace(input[i])) i++;
-    *operation = input[i++];
+    *operation = input[i];
     
     // Read numbers
-    while (input[i] != '\0') {
-        while (isspace(input[i])) i++;
-        if (isdigit(input[i]) || input[i] == '-' || input[i] == '.') {
-            numbers[(*numCount)++] = parseNumber(input, &i);
+    while (input[j] != '\0') {
+        while (isspace(input[j])) {
+			j++;
+		}
+        if (isdigit(input[j]) || input[j] == '-' || input[j] == '.') {
+            numbers[(*numCount)++] = parseNumber(input, &j);
         } else {
-            i++;
+            j++;
         }
     }
+	printf("%lf %lf\n", numbers[0], numbers[1]);
 }
 
 // Perform basic arithmetic calculations
 double performCalculation(char operation, double *numbers, int numCount) {
-   // if (operation == '+') return numbers[0] + numbers[1];
-   // if (operation == '-') return numbers[0] - numbers[1];
-    //if (operation == '*') return numbers[0] * numbers[1];
-   // if (operation == '/') {
-    //    if (numbers[1] == 0) {
-    //        printf("Error: Division by zero.\n");
- //           return 0;
-    //    }
-    //    return numbers[0] / numbers[1];
-   // }
-   // return 0;
+   if (operation == '+') {
+	   return numbers[0] + numbers[1];
+   }
+   if (operation == '-') return numbers[0] - numbers[1];
+    if (operation == '*') return numbers[0] * numbers[1];
+   if (operation == '/') {
+        if (numbers[1] == 0) {
+            printf("Error: Division by zero.\n");
+			return 0;
+        }
+        return numbers[0] / numbers[1];
+    }
+    return 0;
 }
 
 // Solve quadratic formula
@@ -120,7 +125,7 @@ void quadraticFormula(double a, double b, double c) {
      //   double realPart = -b / (2 * a);
     //    double imagPart = sqrt(-discriminant) / (2 * a);
      //   printf("Roots: %.2f + %.2fi, %.2f - %.2fi\n", realPart, imagPart, realPart, imagPart);
-    }
+    //}
 }
 
 // Calculate average of numbers

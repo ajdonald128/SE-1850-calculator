@@ -52,7 +52,7 @@ void main(int argc, char* argv[]) {
 				while (equation_char != '+' && equation_char != '/' && equation_char != '*' && equation_char != '\0' && equation_char != '^') {
 					equation_char = input[j + 1 + count2];
 					if (equation_char == '-') {
-						if (input[j + count2] == '+' || input[count2 + j] == '-' || input[count2 + j] == '/' || input[count2 + j] == '*' || input[count2 + j] == '^') {
+						if (input[j + count2] != '+' && input[count2 + j] != '-' && input[count2 + j] != '/' && input[count2 + j] != '*' && input[count2 + j] != '^') {
 							break;
 						}
 						else if ((j + count2) < 0) {
@@ -68,10 +68,11 @@ void main(int argc, char* argv[]) {
 				while ((j - string_size - 1) >= 0 && equation_char != '+' && equation_char != '/' && equation_char != '*' && equation_char != '^') {
 					equation_char = input[j - string_size - 1];
 					if (equation_char == '-') {
-						if (input[j - string_size - 2] == '+' || input[j - string_size - 2] == '-' || input[j - string_size - 2] == '/' || input[j - string_size - 2] == '*' || input[j - string_size - 2] == '^') {
+						if ((j - string_size - 2) < 0) {
+							string_size += 1;
 							break;
 						}
-						else if ((j - string_size - 2) < 0) {
+						if (input[j - string_size - 2] != '+' && input[j - string_size - 2] != '-' && input[j - string_size - 2] != '/' && input[j - string_size - 2] != '*' && input[j - string_size - 2] != '^') {
 							break;
 						}
 					}
@@ -81,10 +82,11 @@ void main(int argc, char* argv[]) {
 				while ((j - string_size + count2) >= 0 && equation_char != '+' && equation_char != '/' && equation_char != '*'&& equation_char != '^') {
 					equation_char = input[j - string_size + count2];
 					if (equation_char == '-') {
-						if (input[j - string_size + count2 - 1] == '+' || input[j - string_size + count2 - 1] == '-' || input[j - string_size + count2 - 1] == '/' || input[j - string_size + count2 - 1] == '*' || input[j - string_size + count2 - 1] == '^') {
+						if ((j - string_size + count2 - 1) < 0) {
+							temp_string[count2] = equation_char;
 							break;
 						}
-						else if ((j - string_size + count2 - 1) < 0) {
+						if (input[j - string_size + count2 - 1] != '+' && input[j - string_size + count2 - 1] != '-' && input[j - string_size + count2 - 1] != '/' && input[j - string_size + count2 - 1] != '*' && input[j - string_size + count2 - 1] != '^') {
 							break;
 						}
 					}

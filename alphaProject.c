@@ -11,6 +11,7 @@ void quadraticFormula(double a, double b, double c);
 double calculateAverage(double *numbers, int count);
 void calculateArea(char shapeType, double param1, double param2);
 void performTrigonometry(char trigOp, double angle);
+void test(char trigOp, double angle);
 
 // Main function
 int main() {

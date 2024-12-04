@@ -50,7 +50,7 @@ int main() {
             } else {
                 calculateArea(operation, numbers[0], numbers[1]);
             }
-        } else if (strchr("+-*/", operation) && numCount >= 2) {
+        } else if (strchr("+-*/^", operation) && numCount >= 2) {
             double result = performCalculation(operation, numbers, numCount);
             printf("Result: %.2f\n", result);
         } else {
@@ -74,12 +74,12 @@ double parseNumber(const char *str, int *index, char operation) {
 	char* endPtr;
     while (isdigit(str[*index]) || str[*index] == '.' || str[*index] == '-') {
 		if (str[*index] == '-') {
-			if (*index - 1 < 0 || str[*index - 1] == '+' || str[*index - 1] == '-' || str[*index - 1] == '/' || str[*index - 1] == '*' || isalpha(str[*index - 1])) {
+			if (*index - 1 < 0 || str[*index - 1] == '+' || str[*index - 1] == '-' || str[*index - 1] == '/' || str[*index - 1] == '*' || str[*index - 1] == '^' || isalpha(str[*index - 1])) {
 				tempString[i] = str[*index]; //puts numbers into a string
 				i++;
 			}
 			else if (str[*index - 1] == ' ' && !isalpha(operation)) {
-				if (*index - 2 < 0 || str[*index - 2] == '+' || str[*index - 2] == '-' || str[*index - 2] == '/' || str[*index - 2] == '*' || isalpha(str[*index - 2])) {
+				if (*index - 2 < 0 || str[*index - 2] == '+' || str[*index - 2] == '-' || str[*index - 2] == '/' || str[*index - 2] == '*' || str[*index - 2] == '^' || isalpha(str[*index - 2])) {
 					tempString[i] = str[*index]; //puts numbers into a string
 					i++;
 				}
@@ -111,13 +111,13 @@ void parseInput(const char *input, char *operation, double *numbers, int *numCou
     // Read operation
     while (isspace(input[i])) i++;
 	for (int k = 0; k <= sizeof(input); k++) {
-		if (isalpha(input[k]) || input[k] == '+' || input[k] == '-' || input[k] == '/' || input[k] == '*') {
+		if (isalpha(input[k]) || input[k] == '+' || input[k] == '-' || input[k] == '/' || input[k] == '*' || input[k] == '^') {
 			if (input[k] == '-') {
-				if (k - 1 < 0 || input[k - 1] == '+' || input[k - 1] == '-' || input[k - 1] == '/' || input[k - 1] == '*' || isalpha(*operation)) {
+				if (k - 1 < 0 || input[k - 1] == '+' || input[k - 1] == '-' || input[k - 1] == '/' || input[k - 1] == '*' || input[k - 1] == '^' || isalpha(*operation)) {
 					continue;
 				}
 				else if (input[k - 1] == ' ' && !isalpha(*operation)) {
-					if (input[k - 2] == '+' || input[k - 2] == '-' || input[k - 2] == '/' || input[k - 2] == '*' || isalpha(*operation)) {
+					if (input[k - 2] == '+' || input[k - 2] == '-' || input[k - 2] == '/' || input[k - 2] == '*' || input[k - 2] == '^' || isalpha(*operation)) {
 						continue;
 					}
 				}
@@ -132,11 +132,11 @@ void parseInput(const char *input, char *operation, double *numbers, int *numCou
 		}
         if (isdigit(input[j]) || input[j] == '-' || input[j] == '.') {
 			if (input[j] == '-') {
-				if (j - 1 < 0 || input[j - 1] == '+' || input[j - 1] == '-' || input[j - 1] == '/' || input[j - 1] == '*' || isalpha(input[j - 1])) {
+				if (j - 1 < 0 || input[j - 1] == '+' || input[j - 1] == '-' || input[j - 1] == '/' || input[j - 1] == '*' || input[j - 1] == '^' || isalpha(input[j - 1])) {
 					numbers[(*numCount)++] = parseNumber(input, &j, *operation);
 				}
 				else if (input[j - 1] == ' ' && !isalpha(*operation)) {
-					if (j - 2 < 0 || input[j - 2] == '+' || input[j - 2] == '-' || input[j - 2] == '/' || input[j - 2] == '*' || isalpha(input[j - 2])) {
+					if (j - 2 < 0 || input[j - 2] == '+' || input[j - 2] == '-' || input[j - 2] == '/' || input[j - 2] == '*' || input[j - 2] == '^' || isalpha(input[j - 2])) {
 						numbers[(*numCount)++] = parseNumber(input, &j, *operation);
 					}
 					else {
@@ -172,6 +172,7 @@ double performCalculation(char operation, double *numbers, int numCount) {
                 return 0;
             }
             return numbers[0] / numbers[1];
+		case '^': return pow(numbers[0], numbers[1]);
         default:
             return 0;
     }

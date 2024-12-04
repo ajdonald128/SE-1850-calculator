@@ -5,7 +5,7 @@
 #include <string.h>
 
 // Function prototypes
-double parseNumber(const char *str, int *index);
+double parseNumber(const char *str, int *index, char operation);
 void parseInput(const char *input, char *operation, double *numbers, int *numCount);
 double performCalculation(char operation, double *numbers, int numCount);
 void quadraticFormula(double a, double b, double c);
@@ -67,37 +67,90 @@ int main() {
 }
 
 // Parse a single number from a string
-double parseNumber(const char *str, int *index) {
-    char *endPtr;
-    double value = strtod(&str[*index], &endPtr);
-    *index = endPtr - str;
-    return value;
+double parseNumber(const char *str, int *index, char operation) {
+    double result = 0;
+	char tempString[20] = " ";
+	int i = 0;
+	char* endPtr;
+    while (isdigit(str[*index]) || str[*index] == '.' || str[*index] == '-') {
+		if (str[*index] == '-') {
+			if (*index - 1 < 0 || str[*index - 1] == '+' || str[*index - 1] == '-' || str[*index - 1] == '/' || str[*index - 1] == '*' || isalpha(str[*index - 1])) {
+				tempString[i] = str[*index]; //puts numbers into a string
+				i++;
+			}
+			else if (*index - 2 < 0 || str[*index - 2] == '+' || str[*index - 2] == '-' || str[*index - 2] == '/' || str[*index - 2] == '*' || isalpha(str[*index - 2])) {
+				tempString[i] = str[*index]; //puts numbers into a string
+				i++;
+			}
+			else if (isalpha(operation)) {
+				tempString[i] = str[*index]; //puts numbers into a string
+				i++;
+			}
+			else {
+				break;
+			}
+		}
+		else if (str[*index] != '-') {
+			tempString[i] = str[*index];
+			i++;
+		}
+        (*index)++;
+    }
+	result = strtod(tempString, &endPtr); //converts string into a double
+    return result;
 }
 
 // Parse user input into operation and numbers
 void parseInput(const char *input, char *operation, double *numbers, int *numCount) {
-    int i = 0;
+    int i = 0, j = 0;
     *numCount = 0;
+	*operation = ' ';
 
-    // Skip whitespace
+    // Read operation
     while (isspace(input[i])) i++;
-
-    // Detect operation
-    if (isalpha(input[i]) || strchr("+-*/", input[i])) {
-        *operation = input[i++];
-    } else {
-        *operation = '+';  // Default operation
-    }
-
-    // Parse numbers
-    while (input[i] != '\0') {
-        while (isspace(input[i])) i++;
-        if (isdigit(input[i]) || input[i] == '-') {
-            numbers[(*numCount)++] = parseNumber(input, &i);
+	for (int k = 0; k < sizeof(input); k++) {
+		if (isalpha(input[k]) || input[k] == '+' || input[k] == '-' || input[k] == '/' || input[k] == '*') {
+			if (input[k] == '-') {
+				if (k - 1 < 0 || input[k - 1] == '+' || input[k-1] == '-' || input[k - 1] == '/' || input[k - 1] == '*' || isalpha(*operation)) {
+					continue;
+				}
+				else if (k - 2 < 0 || input[k - 2] == '+' || input[k - 2] == '-' || input[k - 2] == '/' || input[k - 2] == '*' || isalpha(*operation)) {
+					continue;
+				}
+			}
+			*operation = input[k];
+		}
+	}
+    
+    // Read numbers
+    while (input[j] != '\0') {
+        while (isspace(input[j])) {
+			j++;
+		}
+        if (isdigit(input[j]) || input[j] == '-' || input[j] == '.') {
+			if (input[j] == '-') {
+				if (j - 1 < 0 || input[j - 1] == '+' || input[j-1] == '-' || input[j - 1] == '/' || input[j - 1] == '*' || isalpha(input[j -1])) {
+					numbers[(*numCount)++] = parseNumber(input, &j, *operation);
+				}
+				else if (j - 2 < 0 || input[j - 2] == '+' || input[j - 2] == '-' || input[j - 2] == '/' || input[j - 2] == '*' || isalpha(input[j - 2])) {
+					numbers[(*numCount)++] = parseNumber(input, &j, *operation);
+				}
+				else if (isalpha(*operation)) {
+					numbers[(*numCount)++] = parseNumber(input, &j, *operation);
+				}
+				else {
+					j++;
+				}
+			}
+			else if (input[j] != '-') {
+				numbers[(*numCount)++] = parseNumber(input, &j, *operation);
+			}
         } else {
-            i++;
+            j++;
         }
     }
+	printf ("operation: %c\n", *operation);
+	printf("%lf %lf %lf\n", numbers[0], numbers[1], numbers[2]);
 }
 
 // Perform basic arithmetic calculations

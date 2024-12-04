@@ -78,9 +78,11 @@ double parseNumber(const char *str, int *index, char operation) {
 				tempString[i] = str[*index]; //puts numbers into a string
 				i++;
 			}
-			else if (*index - 2 < 0 || str[*index - 2] == '+' || str[*index - 2] == '-' || str[*index - 2] == '/' || str[*index - 2] == '*' || isalpha(str[*index - 2])) {
-				tempString[i] = str[*index]; //puts numbers into a string
-				i++;
+			else if (str[*index - 1] == ' ' && !isalpha(operation)) {
+				if (*index - 2 < 0 || str[*index - 2] == '+' || str[*index - 2] == '-' || str[*index - 2] == '/' || str[*index - 2] == '*' || isalpha(str[*index - 2])) {
+					tempString[i] = str[*index]; //puts numbers into a string
+					i++;
+				}
 			}
 			else if (isalpha(operation)) {
 				tempString[i] = str[*index]; //puts numbers into a string
@@ -108,20 +110,21 @@ void parseInput(const char *input, char *operation, double *numbers, int *numCou
 
     // Read operation
     while (isspace(input[i])) i++;
-	for (int k = 0; k < sizeof(input); k++) {
+	for (int k = 0; k <= sizeof(input); k++) {
 		if (isalpha(input[k]) || input[k] == '+' || input[k] == '-' || input[k] == '/' || input[k] == '*') {
 			if (input[k] == '-') {
-				if (k - 1 < 0 || input[k - 1] == '+' || input[k-1] == '-' || input[k - 1] == '/' || input[k - 1] == '*' || isalpha(*operation)) {
+				if (k - 1 < 0 || input[k - 1] == '+' || input[k - 1] == '-' || input[k - 1] == '/' || input[k - 1] == '*' || isalpha(*operation)) {
 					continue;
 				}
-				else if (k - 2 < 0 || input[k - 2] == '+' || input[k - 2] == '-' || input[k - 2] == '/' || input[k - 2] == '*' || isalpha(*operation)) {
-					continue;
+				else if (input[k - 1] == ' ' && !isalpha(*operation)) {
+					if (input[k - 2] == '+' || input[k - 2] == '-' || input[k - 2] == '/' || input[k - 2] == '*' || isalpha(*operation)) {
+						continue;
+					}
 				}
 			}
 			*operation = input[k];
 		}
 	}
-    
     // Read numbers
     while (input[j] != '\0') {
         while (isspace(input[j])) {
@@ -132,8 +135,10 @@ void parseInput(const char *input, char *operation, double *numbers, int *numCou
 				if (j - 1 < 0 || input[j - 1] == '+' || input[j-1] == '-' || input[j - 1] == '/' || input[j - 1] == '*' || isalpha(input[j -1])) {
 					numbers[(*numCount)++] = parseNumber(input, &j, *operation);
 				}
-				else if (j - 2 < 0 || input[j - 2] == '+' || input[j - 2] == '-' || input[j - 2] == '/' || input[j - 2] == '*' || isalpha(input[j - 2])) {
-					numbers[(*numCount)++] = parseNumber(input, &j, *operation);
+				else if (input[j - 1] == ' ' && !isalpha(*operation)) {
+					if (j - 2 < 0 || input[j - 2] == '+' || input[j - 2] == '-' || input[j - 2] == '/' || input[j - 2] == '*' || isalpha(input[j - 2])) {
+						numbers[(*numCount)++] = parseNumber(input, &j, *operation);
+					}
 				}
 				else if (isalpha(*operation)) {
 					numbers[(*numCount)++] = parseNumber(input, &j, *operation);
@@ -150,7 +155,6 @@ void parseInput(const char *input, char *operation, double *numbers, int *numCou
         }
     }
 	printf ("operation: %c\n", *operation);
-	printf("%lf %lf %lf\n", numbers[0], numbers[1], numbers[2]);
 }
 
 // Perform basic arithmetic calculations

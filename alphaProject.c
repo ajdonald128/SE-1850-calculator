@@ -132,12 +132,15 @@ void parseInput(const char *input, char *operation, double *numbers, int *numCou
 		}
         if (isdigit(input[j]) || input[j] == '-' || input[j] == '.') {
 			if (input[j] == '-') {
-				if (j - 1 < 0 || input[j - 1] == '+' || input[j-1] == '-' || input[j - 1] == '/' || input[j - 1] == '*' || isalpha(input[j -1])) {
+				if (j - 1 < 0 || input[j - 1] == '+' || input[j - 1] == '-' || input[j - 1] == '/' || input[j - 1] == '*' || isalpha(input[j - 1])) {
 					numbers[(*numCount)++] = parseNumber(input, &j, *operation);
 				}
 				else if (input[j - 1] == ' ' && !isalpha(*operation)) {
 					if (j - 2 < 0 || input[j - 2] == '+' || input[j - 2] == '-' || input[j - 2] == '/' || input[j - 2] == '*' || isalpha(input[j - 2])) {
 						numbers[(*numCount)++] = parseNumber(input, &j, *operation);
+					}
+					else {
+						j++;
 					}
 				}
 				else if (isalpha(*operation)) {
@@ -177,16 +180,20 @@ double performCalculation(char operation, double *numbers, int numCount) {
 // Solve quadratic formula
 void quadraticFormula(double a, double b, double c) {
     double discriminant = b * b - 4 * a * c;
-
-    if (discriminant >= 0) {
-        double root1 = (-b + sqrt(discriminant)) / (2 * a);
-        double root2 = (-b - sqrt(discriminant)) / (2 * a);
-        printf("Roots: %.2f, %.2f\n", root1, root2);
-    } else {
-        double realPart = -b / (2 * a);
-        double imagPart = sqrt(-discriminant) / (2 * a);
-        printf("Roots: %.2f + %.2fi, %.2f - %.2fi\n", realPart, imagPart, realPart, imagPart);
-    }
+	if (a != 0) {
+		if (discriminant >= 0) {
+			double root1 = (-b + sqrt(discriminant)) / (2 * a);
+			double root2 = (-b - sqrt(discriminant)) / (2 * a);
+			printf("Roots: %.2f, %.2f\n", root1, root2);
+		} else {
+			double realPart = -b / (2 * a);
+			double imagPart = sqrt(-discriminant) / (2 * a);
+			printf("Roots: %.2f + %.2fi, %.2f - %.2fi\n", realPart, imagPart, realPart, imagPart);
+		}
+	}
+	else {
+		printf("Error: Division by zero.\n");
+	}
 }
 
 // Calculate average of numbers
